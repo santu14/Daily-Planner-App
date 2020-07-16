@@ -1,44 +1,111 @@
 
 $(document).ready(function () {
-var now = moment();
-var currentHour = now.format("H");
-var plannerHours = [
-    displayData = ["9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM"],
-    hourData = [9, 10, 11, 12, 13, 14, 15, 16, 17]
-];
+    
+    
+    var now = moment();
+    var currentHour = parseInt(now.format("H"));
 
-function displayTimeblocks(text, data) {
-    var mainDisplay = $("tbody");
+    var plannerHours = [
+        displayData = ["7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM"],
+        hourData = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    ];
 
-    for (i = 0; i < text.length; i++) {
+    var todoDisplay = ["", "", "", "", "", "", "", "", "", "", "", "", "" ];
+    
+    $("#currentDay").text(moment(now).format("dddd MMMM Do"));
+    
+    function displayTimeblocks(text, data) {
+        var mainDisplay = $("tbody");
+        
+        
+        for (i = 0; i < text.length; i++) {
 
-        var newRow = $("<tr class'time-block'>");
-        newRow.attr("data-type", data[i]);
+            var newRow = $("<tr class='time-block'>");
+            newRow.attr("data-type", data[i]);
+            var timeData = parseInt(newRow.attr("data-type"));
 
-        var timeDisplay = $("<td>").addClass("hour").text(text[i]);
+            console.log(newRow.attr("data-type"));
             
-        var textarea = $("<textarea rows='3' cols='60'>");
-        var textareaDisplay = $("<td class'description'>").append(textarea);
+            var timeDisplay = $("<td class='hour'>");
+            timeDisplay.text(text[i]);
 
-        if (newRow.attr("data-type") === currentHour) {
+            var textarea = $("<textarea class='textarea" + data[i] + "' rows='3' cols='60'>");
+            var textareaDisplay = $("<td class='description '>");
+            textareaDisplay.append(textarea);
+            
+            var saveBtnDisplay = $("<td class='saveBtn btn' data-type="+ i +">");
+            saveBtnDisplay.append($("<i class='fa fa-floppy-o fa-3x'>"));
+            
+            newRow.append(timeDisplay, textareaDisplay, saveBtnDisplay);
+            mainDisplay.append(newRow);
+            
+            checkTime(timeData, textarea);
+            displayStoredText (textarea);
+
+        }
+
+        console.log(todoDisplay);
+    }
+    
+    displayTimeblocks(plannerHours[0], plannerHours[1]);
+
+
+    $(".saveBtn").on("click", function(){
+        var currentTimeData = $(this).parent().attr("data-type");
+        var clickedTextarea = $(".textarea"+ currentTimeData);
+        var lineArrayCorrelation = $(this).attr("data-type");
+
+        todoDisplay[lineArrayCorrelation] = clickedTextarea.val();
+
+
+        console.log(currentTimeData);
+        console.log(todoDisplay[currentTimeData]);
+        console.log(todoDisplay );
+        console.log("todoDisplay" );
+
+
+        storeTextInput();
+
+    })
+
+
+
+    function displayStoredText (textarea) {
+
+        var storedTextInput = JSON.parse(localStorage.getItem("savedtext"));
+
+        if (storedTextInput != null){
+            todoDisplay = storedTextInput;
+            textarea.val(todoDisplay[i]);
+           
+        };
+    };
+
+
+    function checkTime(timeData, textarea){
+        
+        if (timeData === currentHour) {
             textarea.addClass("present");
 
-        } else if (newRow.attr("data-type") < currentHour) {
+        } else if (timeData < currentHour) {
             textarea.addClass("past");
 
-        } else if (newRow.attr("data-type") > currentHour) {
+        } else {
             textarea.addClass("future");
 
         };
-        var saveBtnDisplay = $("<td class='saveBtn btn'>").append($("<i class='fa fa-floppy-o fa-3x'>"));
-        newRow.append(timeDisplay, textareaDisplay, saveBtnDisplay);
-        mainDisplay.append(newRow);
     }
-}
 
 
-$("#currentDay").text(moment(now).format("dddd MMMM Do"));
-displayTimeblocks(plannerHours[0], plannerHours[1]);
-console.log(plannerHours);
-console.log(currentHour);
+
+    function storeTextInput(){
+        localStorage.setItem("savedtext", JSON.stringify(todoDisplay));
+    };
+    
+    
+    console.log(plannerHours);
+    console.log(typeof currentHour);
+    
+    
+
 });
