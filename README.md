@@ -9,7 +9,8 @@ This app features dynamically updated HTML and CSS powered by jQuery and uses th
 - Simply click on the purple button to the right of text box to save!
 #### Note: Different colors indicate past present and future
 
-<img src="Assets/screenshot.jpg" width ="600"></img>
+
+![Screen Shot](Assets/Screenshot.jpg)
 
 - - -
 [Daily Planer App](https://santu14.github.io/Daily-Planner-App/)
